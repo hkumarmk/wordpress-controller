@@ -1,3 +1,7 @@
 domain: dployx.io
 repo: wordpress
+resources:
+- group: wordpress
+  kind: Wordpress
+  version: v1
 version: "2"
