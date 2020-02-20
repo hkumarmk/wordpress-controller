@@ -36,15 +36,27 @@ type WordpressReconciler struct {
 // +kubebuilder:rbac:groups=wordpress.dployx.io,resources=wordpresses,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=wordpress.dployx.io,resources=wordpresses/status,verbs=get;update;patch
 
-func (r *WordpressReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
-	_ = context.Background()
-	_ = r.Log.WithValues("wordpress", req.NamespacedName)
+//Reconcile reconciles wordpress instance requests
+func (r *WordpressReconciler) Reconcile(req ctrl.Request) (res ctrl.Result, err error) {
+	ctx := context.Background()
+	log := r.Log.WithValues("wordpress", req.NamespacedName)
 
-	// your logic here
+	// Get DeploymentRequest
+	var wp wordpressv1.Wordpress
+	if err := r.Get(ctx, req.NamespacedName, &wp); err != nil {
+		log.Error(err, "unable to fetch Wordpress Request")
+		// we'll ignore not-found errors, since they can't be fixed by an immediate
+		// requeue (we'll need to wait for a new notification), and we can get them
+		// on deleted requests.
+		return res, client.IgnoreNotFound(err)
+	}
+
+	//
 
 	return ctrl.Result{}, nil
 }
 
+//SetupWithManager setup the controller with manager
 func (r *WordpressReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&wordpressv1.Wordpress{}).

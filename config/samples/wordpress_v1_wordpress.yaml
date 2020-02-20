@@ -3,5 +3,10 @@ kind: Wordpress
 metadata:
   name: wordpress-sample
 spec:
-  # Add fields here
-  foo: bar
+  replicas: 3
+  domains:
+    - example.com
+  dbhost: db.example.com
+  dbname: exampledb
+  dbuser: exampledbuser
+  dbpassword: exampledbpass
